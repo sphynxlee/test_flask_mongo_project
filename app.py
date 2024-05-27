@@ -15,7 +15,7 @@ def home():
 def upload_data():
     data = request.json
     user_id = data.get('user_id')
-    data['upload_date'] = datetime.datetime.utcnow()
+    data['upload_date'] = datetime.datetime.now(datetime.timezone.utc)
 
     if user_id:
         db.uploads.insert_one(data)
