@@ -30,14 +30,16 @@ def home():
 @app.route('/upload', methods=['POST'])
 def upload_data():
     # Assumes Bearer token
-    token = request.headers.get('Authorization').split()[1]
+    # token = request.headers.get('Authorization').split()[1]
     try:
-        decoded = verify_token(token)
+        # decoded = verify_token(token)
         data = request.json
-        user_id = data.get('user_id')
+        user_name = data.get('UserName')
+        user_email = data.get('UserEmail')
+
         data['upload_date'] = datetime.datetime.now(datetime.timezone.utc)
 
-        if user_id:
+        if user_name and user_email:
             db.uploads.insert_one(data)
             return jsonify({'message': 'Data uploaded successfully'}), 201
         else:
