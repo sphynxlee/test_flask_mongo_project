@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from pymongo import MongoClient
 import datetime
 import jwt
-import requests
+# import requests
 
 app = Flask(__name__)
 
