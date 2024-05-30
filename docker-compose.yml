@@ -1,4 +1,5 @@
 version: '3'
+
 services:
   web:
     build: .
@@ -6,8 +7,8 @@ services:
       - "5001:5000"
     volumes:
       - .:/app
-    environment:
-      - FLASK_ENV=development
+    depends_on:
+      - db
   db:
     image: mongo:latest
     ports:
