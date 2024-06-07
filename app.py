@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 import datetime
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 client = MongoClient('mongodb://db:27017/')
 db = client['mydatabase']
@@ -14,17 +16,28 @@ def home():
 @app.route('/upload', methods=['POST'])
 def upload_data():
     try:
-        data = request.json
-        user_name = data.get('UserName')
-        user_email = data.get('UserEmail')
+        data_list = request.json  # Assuming the incoming data is a list of records
 
-        data['upload_date'] = datetime.datetime.now(datetime.timezone.utc)
+        for data in data_list:
+            record_id = data.get('RecordID')
+            user_name = data.get('UserName')
+            user_email = data.get('UserEmail')
 
-        if user_name and user_email:
-            db.uploads.insert_one(data)
-            return jsonify({'message': 'Data uploaded successfully'}), 201
-        else:
-            return jsonify({'error': 'User ID is required'}), 400
+            data['upload_date'] = datetime.datetime.now(datetime.timezone.utc)
+
+            if user_name and user_email:
+                # Check if the record with the same RecordID already exists
+                existing_record = db.uploads.find_one({'RecordID': record_id})
+
+                if existing_record:
+                    # Update the existing record
+                    db.uploads.update_one({'RecordID': record_id}, {'$set': data})
+                else:
+                    # Insert a new record
+                    db.uploads.insert_one(data)
+
+        return jsonify({'message': 'Data processed successfully'}), 201
+
     except Exception as e:
         return jsonify({'error': str(e)}), 401
 
