@@ -4,7 +4,7 @@ from pymongo import MongoClient
 import datetime
 
 app = Flask(__name__)
-CORS(app, resources={r"/upload": {"origins": "http://127.0.0.1:8080"}})
+CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:8080"}})
 
 client = MongoClient('mongodb://db:27017/')
 db = client['mydatabase']
