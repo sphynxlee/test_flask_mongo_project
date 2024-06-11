@@ -52,7 +52,12 @@ def upload_data():
 @app.route('/uploads', methods=['GET'])
 def get_uploads():
     try:
-        uploads = list(db.uploads.find({}, {'_id': 0}))  # Excluding the _id field from the result
+        user_email = request.args.get('UserEmail')
+        query = {}
+        if user_email:
+            query['UserEmail'] = user_email
+        # Excluding the _id field from the result
+        uploads = list(db.uploads.find(query, {'_id': 0}))
         return jsonify(uploads), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
