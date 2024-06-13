@@ -15,6 +15,7 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+  # use NAS reverse proxy instead
   app:
     image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped
